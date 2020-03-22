@@ -1,0 +1,30 @@
+version: '2.3'
+services:
+  mcsseguimientocovid:
+    image: reposdocker.minsa.gob.pe/mcs-seguimiento-covid:0.0.1
+    container_name: mcsseguimientocovid
+    hostname: mcsseguimientocovid
+    dns:
+      - 10.10.2.6
+      - 10.10.3.6
+    ports:
+      - "19092:8080"
+    volumes:
+      - "./mcs-minsa:/opt/data/mcs-minsa"
+      - "./firma:/opt/data/firma"  
+    cpus: 0.9
+    cpuset: '0'
+    restart: always
+    mem_limit: '2048m'
+    networks:
+      covidnetwork:
+        ipv4_address: 11.11.3.2
+
+networks:
+  covidnetwork:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 11.11.3.0/24
+          gateway: 11.11.3.254
