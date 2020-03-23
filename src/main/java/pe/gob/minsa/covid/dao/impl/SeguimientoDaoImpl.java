@@ -1,7 +1,9 @@
 package pe.gob.minsa.covid.dao.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -9,11 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import pe.gob.minsa.covid.bean.RequestRegistroBean;
 import pe.gob.minsa.covid.dao.SeguimientoDao;
 import pe.gob.minsa.covid.model.Pais;
 import pe.gob.minsa.covid.rowmapper.PaisRowMapper;
 
+@Transactional
 @Repository
 public class SeguimientoDaoImpl extends JdbcDaoSupport implements SeguimientoDao {
 
@@ -33,6 +40,26 @@ public class SeguimientoDaoImpl extends JdbcDaoSupport implements SeguimientoDao
 			logger.error(e.getMessage());			
 		}
 		return paises;
+	}
+
+	@Override
+	public String registraCaso(RequestRegistroBean resquestBean) {
+		String resp = "0000";
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String , Object> out = new HashMap<String, Object>();
+		try {
+			String json = mapper.writeValueAsString(resquestBean);
+			logger.debug("Json de entrada :"+json);
+			String sql = "select * from public.sp_registro_seguimiento('"+json+"')";
+			out = getJdbcTemplate().queryForMap(sql);
+			System.out.println(out.toString());
+			resp = (String) out.get("sp_registro_seguimiento");
+			logger.debug("Mensaje del SP : "+resp);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			resp = "9000";
+		}
+		return resp;
 	}
 
 }

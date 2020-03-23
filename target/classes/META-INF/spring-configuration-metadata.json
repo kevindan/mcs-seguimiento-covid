@@ -4,7 +4,7 @@
       "name": "spring.datasource",
       "type": "javax.sql.DataSource",
       "sourceType": "pe.gob.minsa.covid.config.AppConfig",
-      "sourceMethod": "public javax.sql.DataSource dataSource() "
+      "sourceMethod": "dataSource()"
     }
   ],
   "properties": [],

@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @ComponentScan({"pe.gob.minsa.covid.*"})
 @EnableTransactionManagement
-//@PropertySource(value= {"file:/opt/data/mcs-minsa/properties/mcs-seguimiento-covid.properties"})
-@PropertySource(value= {"classpath:mcs-seguimiento-covid.properties"})
+@PropertySource(value= {"file:/opt/data/mcs-minsa/properties/mcs-seguimiento-covid.properties"})
+//@PropertySource(value= {"classpath:mcs-seguimiento-covid.properties"})
 public class AppConfig {
 
     @Bean

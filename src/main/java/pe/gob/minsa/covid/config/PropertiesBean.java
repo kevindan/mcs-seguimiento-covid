@@ -7,8 +7,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-//@PropertySource(value= {"file:/opt/data/mcs-minsa/properties/mcs-seguimiento-covid.properties"})
-@PropertySource(value= {"classpath:mcs-seguimiento-covid.properties"})
+@PropertySource(value= {"file:/opt/data/mcs-minsa/properties/mcs-seguimiento-covid.properties"})
+//@PropertySource(value= {"classpath:mcs-seguimiento-covid.properties"})
 public class PropertiesBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
