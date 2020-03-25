@@ -17,7 +17,7 @@ public class Persona implements Serializable{
 	private String indContactoVirus;
 	private String indPaisVisita;
 	private String codPaisVisita;
-	
+		
 	public Persona() {
 		
 	}

@@ -22,11 +22,19 @@ import pe.gob.minsa.covid.bean.ConsultaMPIReq;
 import pe.gob.minsa.covid.bean.DatosReniecPersonaResp;
 import pe.gob.minsa.covid.bean.PaisResponseBean;
 import pe.gob.minsa.covid.bean.RequestRegistroBean;
+import pe.gob.minsa.covid.bean.ResponseHospitalesDepartamento;
+import pe.gob.minsa.covid.bean.ResponseListarPosicion;
 import pe.gob.minsa.covid.bean.ResponseRegistroBean;
+import pe.gob.minsa.covid.bean.ResponseUbigeoCasos;
 import pe.gob.minsa.covid.bean.ResponseValidaMpiBean;
 import pe.gob.minsa.covid.bean.ResponseValidaPaciente;
 import pe.gob.minsa.covid.config.PropertiesBean;
+import pe.gob.minsa.covid.model.HospitalesDepartamento;
 import pe.gob.minsa.covid.model.Pais;
+import pe.gob.minsa.covid.model.PosicionPersonaEpisodio;
+import pe.gob.minsa.covid.model.UbigeoCasos;
+import pe.gob.minsa.covid.repository.HospitalesDepartamentoRepository;
+import pe.gob.minsa.covid.repository.UbigeoCasosRepository;
 import pe.gob.minsa.covid.service.SeguimientoService;
 
 @RestController
@@ -41,6 +49,13 @@ public class SeguimientoController {
 
 	@Autowired
 	private SeguimientoService _seguimientoService;
+	
+	@Autowired
+	private HospitalesDepartamentoRepository hospitalDeptoRepository;
+	
+	@Autowired
+	private UbigeoCasosRepository ubigeoCasosRepository;
+
 
 	@Autowired
 	private PropertiesBean propertiesBean;
@@ -108,6 +123,80 @@ public class SeguimientoController {
 		ResponseRegistroBean responseRegistroBean = new ResponseRegistroBean();
 		responseRegistroBean = _seguimientoService.registraCaso(registroBean);
 		return responseRegistroBean;
+	}
+	
+	@GetMapping(value="listar-posicion" , produces="application/json; charset=UTF-8")
+	public ResponseListarPosicion listarPosicion() {
+		
+		ResponseListarPosicion rsp = new ResponseListarPosicion();
+		List<PosicionPersonaEpisodio> posiciones = new ArrayList<PosicionPersonaEpisodio>();
+		try {
+			posiciones = _seguimientoService.listarPosicion();
+			if(posiciones.isEmpty()) {
+				rsp.setCodigo("9999");
+				rsp.setPosiciones(null);
+			}else {
+				rsp.setCodigo("0000");
+				rsp.setPosiciones(posiciones);
+			}
+		} catch (Exception e) {
+			rsp.setCodigo("9000");
+			rsp.setPosiciones(null);
+		}
+		return rsp;
+	}
+	
+	@GetMapping(value="buscar-hospitales/{departamentoId}", produces="application/json; charset=UTF-8")
+	public  ResponseHospitalesDepartamento buscarHospitales(@PathVariable("departamentoId")  String departamentoId){
+		
+		ResponseHospitalesDepartamento rsp = new ResponseHospitalesDepartamento();
+		List<HospitalesDepartamento> hospitales = new ArrayList<HospitalesDepartamento>();
+			try {
+				
+				hospitales = hospitalDeptoRepository.findByDepartamentoId(departamentoId);
+				
+				if(hospitales.isEmpty()) {
+					
+					rsp.setCodigo("9999");
+					rsp.setHospitales(null);
+					
+				}else {
+					rsp.setCodigo("0000");
+					rsp.setHospitales(hospitales);
+				}
+				
+			} catch (Exception e) {
+				rsp.setCodigo("9000");
+				rsp.setHospitales(null);			
+			
+		}
+			return rsp;
+	}
+	
+
+	@GetMapping(value="listar-ubigeo-casos", produces="application/json; charset=UTF-8")
+	public ResponseUbigeoCasos listarUbigeoCasos() {
+		
+		ResponseUbigeoCasos rsp = new ResponseUbigeoCasos();
+
+		List<UbigeoCasos> lista = new ArrayList<UbigeoCasos>();
+		lista = ubigeoCasosRepository.findByEstadoOrderByUbigeo("1");
+		try {
+			if(lista.isEmpty())
+			{	rsp.setCodigo("9999");
+				rsp.setUbigeoCasos(null);
+			}else {
+				rsp.setCodigo("0000");
+				rsp.setUbigeoCasos(lista);
+			}
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			rsp.setCodigo("9000");
+			rsp.setUbigeoCasos(null);
+		}
+		
+		return rsp;
 	}
 
 	private DatosReniecPersonaResp datosReniecPersona(String tipo_doc, String nro_doc) {

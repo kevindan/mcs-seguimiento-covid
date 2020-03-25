@@ -12,6 +12,7 @@ import pe.gob.minsa.covid.bean.RequestRegistroBean;
 import pe.gob.minsa.covid.bean.ResponseRegistroBean;
 import pe.gob.minsa.covid.dao.SeguimientoDao;
 import pe.gob.minsa.covid.model.Pais;
+import pe.gob.minsa.covid.model.PosicionPersonaEpisodio;
 import pe.gob.minsa.covid.service.SeguimientoService;
 
 @Service
@@ -43,6 +44,20 @@ public class SeguimientoServiceImpl implements SeguimientoService {
 			response.setCodigo("9000");
 		}
 		return response;
+	}
+	@Override
+	public List<PosicionPersonaEpisodio> listarPosicion() {
+		List<PosicionPersonaEpisodio> lista = new ArrayList<PosicionPersonaEpisodio>();
+		
+		try {
+			
+			lista = _seguimientoDao.listarPosicion();
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		return lista;
 	}
 
 }

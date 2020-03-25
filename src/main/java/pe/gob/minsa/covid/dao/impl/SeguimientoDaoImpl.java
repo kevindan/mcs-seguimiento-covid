@@ -18,7 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import pe.gob.minsa.covid.bean.RequestRegistroBean;
 import pe.gob.minsa.covid.dao.SeguimientoDao;
 import pe.gob.minsa.covid.model.Pais;
+import pe.gob.minsa.covid.model.PosicionPersonaEpisodio;
 import pe.gob.minsa.covid.rowmapper.PaisRowMapper;
+import pe.gob.minsa.covid.rowmapper.PosicionPersonaEpisodioRowMapper;
 
 @Transactional
 @Repository
@@ -60,6 +62,24 @@ public class SeguimientoDaoImpl extends JdbcDaoSupport implements SeguimientoDao
 			resp = "9000";
 		}
 		return resp;
+	}
+	@Override
+	public List<PosicionPersonaEpisodio> listarPosicion() {
+		List<PosicionPersonaEpisodio> lista = new ArrayList<PosicionPersonaEpisodio>();
+		String sql = "select * from  public.sp_listar_posicion();";
+		
+		try {
+			
+			RowMapper<PosicionPersonaEpisodio> rowLista = new PosicionPersonaEpisodioRowMapper();
+			
+			lista = getJdbcTemplate().query(sql,rowLista);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			
+		}
+				
+		return lista ;
 	}
 
 }
